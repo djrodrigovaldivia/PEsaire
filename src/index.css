@@ -1,0 +1,56 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --bg-main: #FAF8F5;
+    --card-bg: #FFFFFF;
+    --card-border: #ECE5DB;
+    --primary-sage: #52796F;
+    --primary-sage-hover: #43645C;
+    --accent-peach: #E07A5F;
+    --text-main: #262B28;
+    --text-muted: #6C7671;
+  }
+
+  .dark {
+    --bg-main: #141716;
+    --card-bg: #1F2422;
+    --card-border: #2C3431;
+    --primary-sage: #6B948A;
+    --primary-sage-hover: #587F76;
+    --accent-peach: #E2886F;
+    --text-main: #EAE6DF;
+    --text-muted: #95A19B;
+  }
+
+  body {
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+/* Safe areas for iPhone bottom and top */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 16px);
+}
+
+.pt-safe {
+  padding-top: env(safe-area-inset-top, 16px);
+}
+
+.pb-safe-nav {
+  padding-bottom: calc(env(safe-area-inset-bottom, 16px) + 72px);
+}
+
+/* Micro-animations honoring prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

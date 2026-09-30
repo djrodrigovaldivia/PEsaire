@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="es" class="h-full">
+  <head>
+    <meta charset="UTF-8" />
+    <script>
+      (function () {
+        try {
+          var originalFetch = window.fetch;
+          // 1. Define writable own property on window
+          try {
+            Object.defineProperty(window, 'fetch', {
+              value: originalFetch,
+              writable: true,
+              configurable: true,
+              enumerable: true,
+            });
+          } catch (e1) {
+            Object.defineProperty(window, 'fetch', {
+              configurable: true,
+              enumerable: true,
+              get: function () {
+                return originalFetch;
+              },
+              set: function (fn) {
+                originalFetch = fn;
+              },
+            });
+          }
+
+          // 2. Also patch Window.prototype if accessible
+          if (typeof Window !== 'undefined' && Window.prototype) {
+            try {
+              var protoDesc = Object.getOwnPropertyDescriptor(Window.prototype, 'fetch');
+              if (protoDesc && !protoDesc.set && protoDesc.configurable) {
+                var protoGet = protoDesc.get || function () { return originalFetch; };
+                Object.defineProperty(Window.prototype, 'fetch', {
+                  configurable: true,
+                  enumerable: true,
+                  get: protoGet,
+                  set: function (fn) {
+                    originalFetch = fn;
+                    try {
+                      Object.defineProperty(this, 'fetch', {
+                        value: fn,
+                        writable: true,
+                        configurable: true,
+                        enumerable: true,
+                      });
+                    } catch (_) {}
+                  },
+                });
+              }
+            } catch (e2) {}
+          }
+        } catch (e) {}
+      })();
+    </script>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+    />
+    <title>Peso Claro — Estimaciones claras, registros reales</title>
+    <meta
+      name="description"
+      content="Herramienta privada y honesta para calcular raciones de comida de tu gata y registrar pesajes obtenidos con balanza física."
+    />
+    <meta property="og:title" content="Peso Claro" />
+    <meta
+      property="og:description"
+      content="Estimaciones claras, registros reales. Para comida felina y mediciones de balanza física."
+    />
+    <meta property="og:type" content="website" />
+    <meta name="theme-color" content="#52796F" />
+    
+    <!-- iOS / Safari PWA support -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Peso Claro" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    
+    <!-- Icons -->
+    <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+  </head>
+  <body class="h-full bg-[#FAF8F5] text-[#262B28] antialiased selection:bg-[#52796F]/20 selection:text-[#52796F]">
+    <div id="root" class="h-full flex flex-col"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
